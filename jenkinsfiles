@@ -1,0 +1,40 @@
+pipeline {
+    agent none
+    stages {
+        stage('Checkout SCM') {
+            steps {
+                git branch: 'main', credentialsId: 'your-git-credentials-id', url: 'https://github.com/your-username/your-repo.git'
+            }
+        }
+        stage('Build & Test (Multi-Stage Docker)') {
+            agent {
+                docker {
+                    image 'openjdk:17-slim' // Lightweight base image for building
+                    args '-v $(pwd):/app' // Mount current directory as /app
+                }
+            }
+            steps {
+                sh 'mvn clean package' // Or 'gradle clean build' depending on build tool
+                // Unit tests (replace with your actual commands)
+                sh 'mvn test' // Or 'gradle test'
+            }
+        }
+        stage('Publish Docker Image') {
+            steps {
+                // Docker login if needed for private registry
+                docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD $DOCKER_REGISTRY
+                script {
+                    def imageName = "your-application-name:latest"
+                    def dockerfile = 'Dockerfile'
+
+                    // Build the Docker image using multi-stage build
+                    docker.build image: imageName, context: '.', dockerfile: dockerfile
+                    // Push the image to a Docker registry (optional)
+                    docker.withRegistry(url: "$DOCKER_REGISTRY", credentialsId: 'your-docker-credentials-id') {
+                        docker.push(imageName)
+                    }
+                }
+            }
+        }
+    }
+}
