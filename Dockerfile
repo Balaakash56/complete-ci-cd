@@ -1,9 +1,9 @@
 # Stage 1: Build (lightweight)
 FROM openjdk:17-slim AS builder
 WORKDIR /app
-COPY pom.xml ./  # Or build.gradle
+COPY pom.xml ./  
 COPY src .
-RUN mvn package  # Or gradle build
+RUN mvn package  
 
 # Stage 2: Final image (slim)
 FROM openjdk:17-alpine AS final
