@@ -24,13 +24,13 @@ pipeline {
                 // Docker login if needed for private registry
                 docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD $DOCKER_REGISTRY
                 script {
-                    def imageName = "your-application-name:latest"
+                    def imageName = "acers:latest"
                     def dockerfile = 'Dockerfile'
 
                     // Build the Docker image using multi-stage build
                     docker.build image: imageName, context: '.', dockerfile: dockerfile
                     // Push the image to a Docker registry (optional)
-                    docker.withRegistry(url: "$DOCKER_REGISTRY", credentialsId: 'your-docker-credentials-id') {
+                    docker.withRegistry(url: "$balaakash", credentialsId: 'docker-cred') {
                         docker.push(imageName)
                     }
                 }
