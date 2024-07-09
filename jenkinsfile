@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Checkout SCM') {
             steps {
-                git branch: 'main', credentialsId: 'f01a604b-b751-480b-bcfc-ed327d99ab85', url: 'https://github.com/your-username/your-repo.git'
+                git branch: 'main', credentialsId: 'f01a604b-b751-480b-bcfc-ed327d99ab85	', url: 'https://github.com/your-username/your-repo.git'
             }
         }
         stage('Build & Test (Multi-Stage Docker)') {
