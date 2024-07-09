@@ -9,5 +9,5 @@ RUN mvn package  # Or gradle build
 FROM openjdk:17-alpine AS final
 WORKDIR /app
 COPY --from=builder /app/target/*.jar ./  # Copy JAR file from build stage
-EXPOSE 8080  # Expose port for your application
-CMD ["java", "-jar", "your-application.jar"]
+EXPOSE 8080  # Expose port for  acers
+CMD ["java", "-jar", "acers.jar"]
