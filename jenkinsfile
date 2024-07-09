@@ -21,17 +21,16 @@ pipeline {
         }
         stage('Publish Docker Image') {
             steps {
-                // Docker login if needed for private registry
-                docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD $DOCKER_REGISTRY
                 script {
-                    def imageName = "acers:latest"
-                    def dockerfile = 'Dockerfile'
+                    // Docker login if needed for private registry
+                    docker.withRegistry('https://hub.docker.com/repositories/balaakash', 'docker-cred') {
+                        def imageName = "acers:latest"
+                        def dockerfile = 'Dockerfile'
 
-                    // Build the Docker image using multi-stage build
-                    docker.build image: imageName, context: '.', dockerfile: dockerfile
-                    // Push the image to a Docker registry (optional)
-                    docker.withRegistry(url: "$balaakash", credentialsId: 'docker-cred') {
-                        docker.push(imageName)
+                        // Build the Docker image using multi-stage build
+                        def app = docker.build(imageName, "-f ${dockerfile} .")
+                        // Push the image to a Docker registry
+                        app.push('latest')
                     }
                 }
             }
